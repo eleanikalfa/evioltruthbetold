@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>evioltruth.gr — Truth Be Told</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:    #0E3A5C;
+  --teal:    #0F6E56;
+  --sky:     #1A7AAB;
+  --amber:   #C98000;
+  --slate:   #3D5068;
+  --white:   #FFFFFF;
+  --light:   #F4F7FA;
+  --teal-lt: #E1F5EE;
+  --border:  #C5D3DC;
+  --body:    #1E2E3D;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--white);
+  color: var(--body);
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--navy);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 64px;
+  border-bottom: 3px solid var(--amber);
+}
+.nav-brand {
+  display: flex; align-items: baseline; gap: 2px;
+  font-family: 'DM Sans', sans-serif; font-weight: 600;
+  font-size: 18px; letter-spacing: 0.02em;
+}
+.nav-brand .eviol { color: var(--white); }
+.nav-brand .truth { color: var(--amber); font-size: 13px; font-weight: 400; margin-left: 8px; letter-spacing: 0.1em; text-transform: uppercase; }
+.nav-links { display: flex; align-items: center; gap: 32px; }
+.nav-links a { color: rgba(255,255,255,0.65); font-size: 13px; text-decoration: none; letter-spacing: 0.03em; transition: color 0.2s; }
+.nav-links a:hover { color: var(--white); }
+.nav-ask {
+  background: var(--amber); color: var(--white);
+  font-size: 13px; font-weight: 500; padding: 9px 20px;
+  border: none; border-radius: 4px; cursor: pointer;
+  letter-spacing: 0.02em; transition: background 0.2s;
+}
+.nav-ask:hover { background: #a86c00; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  background: var(--navy);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 120px 80px 80px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 45%; height: 100%;
+  background: linear-gradient(135deg, transparent 30%, rgba(15,110,86,0.15) 100%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--teal) 0%, var(--sky) 50%, var(--amber) 100%);
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--amber);
+  margin-bottom: 32px;
+}
+.hero-tag::before {
+  content: ''; width: 28px; height: 2px; background: var(--amber);
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(48px, 6vw, 88px);
+  font-weight: 900; color: var(--white);
+  line-height: 1.05; letter-spacing: -0.02em;
+  max-width: 720px; margin-bottom: 8px;
+}
+.hero h1 em {
+  font-style: normal; color: var(--amber);
+}
+.hero-greek {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(14px, 1.4vw, 18px);
+  color: rgba(255,255,255,0.4);
+  font-style: italic;
+  margin-bottom: 40px;
+  max-width: 640px;
+  line-height: 1.5;
+}
+.hero-sub {
+  font-size: 17px; color: rgba(255,255,255,0.65);
+  max-width: 520px; line-height: 1.7; margin-bottom: 56px;
+}
+.hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--teal); color: var(--white);
+  font-size: 14px; font-weight: 500; padding: 14px 28px;
+  border: none; border-radius: 4px; cursor: pointer;
+  letter-spacing: 0.02em; transition: background 0.2s;
+}
+.btn-primary:hover { background: #085041; }
+.btn-outline {
+  background: transparent; color: var(--white);
+  font-size: 14px; font-weight: 500; padding: 14px 28px;
+  border: 1.5px solid rgba(255,255,255,0.3); border-radius: 4px;
+  cursor: pointer; letter-spacing: 0.02em; transition: all 0.2s;
+}
+.btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,0.05); }
+
+/* Scroll indicator */
+.scroll-hint {
+  position: absolute; bottom: 48px; left: 80px;
+  display: flex; align-items: center; gap: 12px;
+  color: rgba(255,255,255,0.3); font-size: 12px; letter-spacing: 0.1em;
+}
+.scroll-line { width: 40px; height: 1px; background: rgba(255,255,255,0.3); }
+
+/* ── SUPPORTING MESSAGES STRIP ── */
+.messages-strip {
+  background: var(--teal);
+  display: flex; align-items: stretch;
+  overflow: hidden;
+}
+.message-item {
+  flex: 1; padding: 32px 40px;
+  display: flex; align-items: flex-start; gap: 16px;
+  border-right: 1px solid rgba(255,255,255,0.15);
+}
+.message-item:last-child { border-right: none; }
+.message-icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 16px;
+}
+.message-text p {
+  font-size: 13px; color: rgba(255,255,255,0.7);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 6px; font-weight: 500;
+}
+.message-text strong {
+  font-size: 17px; color: var(--white);
+  font-family: 'Playfair Display', serif;
+  font-weight: 700; line-height: 1.3;
+}
+
+/* ── MYTHS SECTION ── */
+.myths-section { padding: 100px 80px; background: var(--light); }
+.section-header { margin-bottom: 64px; }
+.section-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--teal);
+  display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+}
+.section-eyebrow::after { content: ''; flex: 1; height: 1px; background: var(--border); max-width: 60px; }
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 700; color: var(--navy);
+  line-height: 1.15; max-width: 560px;
+}
+.myths-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+.myth-card {
+  background: var(--white);
+  padding: 40px 36px;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.myth-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px; background: var(--teal);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.myth-card:hover { background: var(--teal-lt); }
+.myth-card:hover::after { transform: scaleX(1); }
+.myth-verdict {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 5px 12px;
+  border-radius: 2px; margin-bottom: 20px;
+}
+.verdict-myth { background: #fde8e8; color: #a32d2d; }
+.verdict-partial { background: #faeeda; color: #854f0b; }
+.verdict-true { background: var(--teal-lt); color: var(--teal); }
+.myth-q {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 700;
+  color: var(--navy); line-height: 1.3;
+  margin-bottom: 14px;
+}
+.myth-desc {
+  font-size: 14px; color: var(--slate);
+  line-height: 1.7; margin-bottom: 24px;
+}
+.myth-cta {
+  font-size: 13px; font-weight: 600;
+  color: var(--teal); letter-spacing: 0.03em;
+  display: flex; align-items: center; gap: 6px;
+}
+.myth-cta span { transition: transform 0.2s; }
+.myth-card:hover .myth-cta span { transform: translateX(4px); }
+
+/* ── AMBASSADOR SECTION ── */
+.ambassador-section {
+  background: var(--navy);
+  padding: 100px 80px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+  align-items: center;
+}
+.amb-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--amber);
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 24px;
+}
+.amb-eyebrow::before { content: ''; width: 28px; height: 2px; background: var(--amber); }
+.amb-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 3.5vw, 52px);
+  font-weight: 700; color: var(--white);
+  line-height: 1.15; margin-bottom: 24px;
+}
+.amb-title em { font-style: normal; color: var(--amber); }
+.amb-body {
+  font-size: 15px; color: rgba(255,255,255,0.65);
+  line-height: 1.8; margin-bottom: 40px;
+}
+.amb-quote {
+  border-left: 3px solid var(--amber);
+  padding: 20px 28px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 40px;
+}
+.amb-quote p {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; color: var(--white);
+  line-height: 1.6; font-style: italic;
+  margin-bottom: 12px;
+}
+.amb-quote cite {
+  font-size: 13px; color: var(--amber);
+  font-style: normal; font-weight: 500;
+  letter-spacing: 0.05em;
+}
+.amb-episodes { display: flex; flex-direction: column; gap: 12px; }
+.episode-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 20px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px; cursor: pointer;
+  transition: background 0.2s;
+}
+.episode-item:hover { background: rgba(255,255,255,0.1); }
+.ep-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--amber); color: var(--white);
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.ep-title { font-size: 14px; color: var(--white); font-weight: 500; }
+.ep-myth { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+.ep-arrow { margin-left: auto; color: rgba(255,255,255,0.3); font-size: 16px; }
+
+/* ── PHARMACIST CTA SECTION ── */
+.pharmacist-section {
+  padding: 100px 80px;
+  background: var(--white);
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+  align-items: center;
+}
+.pharm-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--teal);
+  display: flex; align-items: center; gap: 10px; margin-bottom: 24px;
+}
+.pharm-eyebrow::after { content: ''; width: 40px; height: 1px; background: var(--border); }
+.pharm-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 3.5vw, 48px);
+  font-weight: 700; color: var(--navy);
+  line-height: 1.2; margin-bottom: 24px;
+}
+.pharm-body {
+  font-size: 15px; color: var(--slate);
+  line-height: 1.8; margin-bottom: 40px;
+}
+.pharm-steps { display: flex; flex-direction: column; gap: 0; }
+.pharm-step {
+  display: flex; gap: 20px; padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+.pharm-step:last-child { border-bottom: none; }
+.step-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px; font-weight: 700;
+  color: var(--border); line-height: 1;
+  flex-shrink: 0; width: 40px;
+}
+.step-content strong {
+  font-size: 15px; color: var(--navy);
+  display: block; margin-bottom: 4px;
+}
+.step-content p { font-size: 13px; color: var(--slate); line-height: 1.6; }
+
+.pharm-visual {
+  background: var(--navy);
+  border-radius: 8px; padding: 48px 40px;
+  position: relative; overflow: hidden;
+}
+.pharm-visual::before {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 100%; height: 4px;
+  background: linear-gradient(90deg, var(--teal), var(--amber));
+}
+.pharm-visual-tag {
+  font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--amber);
+  font-weight: 600; margin-bottom: 20px;
+}
+.pharm-visual-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px; color: var(--white);
+  font-weight: 700; line-height: 1.3;
+  margin-bottom: 16px;
+}
+.pharm-visual-sub {
+  font-size: 14px; color: rgba(255,255,255,0.55);
+  line-height: 1.7; margin-bottom: 32px;
+}
+.pharm-visual-btn {
+  background: var(--amber); color: var(--white);
+  border: none; padding: 14px 28px; border-radius: 4px;
+  font-size: 14px; font-weight: 500; cursor: pointer;
+  letter-spacing: 0.02em; transition: background 0.2s;
+  width: 100%;
+}
+.pharm-visual-btn:hover { background: #a86c00; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--navy);
+  padding: 48px 80px 32px;
+  border-top: 4px solid var(--amber);
+}
+.footer-top {
+  display: flex; justify-content: space-between;
+  align-items: flex-start; gap: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.footer-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; color: var(--white);
+  font-weight: 700; margin-bottom: 8px;
+}
+.footer-tagline {
+  font-size: 13px; color: rgba(255,255,255,0.4);
+  letter-spacing: 0.05em;
+}
+.footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+.footer-links a {
+  font-size: 13px; color: rgba(255,255,255,0.5);
+  text-decoration: none; transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--white); }
+.footer-legal {
+  font-size: 12px; color: rgba(255,255,255,0.3);
+  line-height: 1.7;
+}
+
+/* ── ARTICLE VIEW ── */
+#article-view { display: none; }
+.article-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--navy); height: 64px;
+  display: flex; align-items: center; gap: 20px;
+  padding: 0 40px;
+  border-bottom: 3px solid var(--amber);
+}
+.back-btn {
+  background: none; border: none; cursor: pointer;
+  color: rgba(255,255,255,0.55); font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  display: flex; align-items: center; gap: 6px;
+  transition: color 0.2s;
+}
+.back-btn:hover { color: var(--white); }
+.article-site-name { color: rgba(255,255,255,0.35); font-size: 13px; margin-left: auto; }
+
+.article-hero {
+  padding: 120px 80px 64px;
+  background: var(--light);
+  border-bottom: 1px solid var(--border);
+}
+.article-verdict {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 6px 14px;
+  border-radius: 2px; margin-bottom: 28px;
+}
+.article-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 700; color: var(--navy);
+  line-height: 1.15; max-width: 760px;
+  margin-bottom: 20px;
+}
+.article-meta { font-size: 13px; color: var(--slate); }
+
+.article-body {
+  max-width: 760px; margin: 0 auto;
+  padding: 64px 80px;
+}
+.article-body h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--navy); margin: 40px 0 14px;
+}
+.article-body p {
+  font-size: 16px; color: var(--slate);
+  line-height: 1.8; margin-bottom: 18px;
+}
+.fact-box {
+  background: var(--teal-lt);
+  border-left: 4px solid var(--teal);
+  padding: 20px 24px; border-radius: 0 6px 6px 0;
+  margin: 32px 0;
+}
+.fact-box p { color: #085041; margin: 0; }
+.fact-box strong { color: var(--teal); }
+.source-tag {
+  display: inline-block; background: var(--light);
+  color: var(--slate); font-size: 12px;
+  padding: 4px 12px; border-radius: 4px;
+  margin-right: 6px; margin-top: 8px;
+}
+.article-cta {
+  background: var(--navy); border-radius: 6px;
+  padding: 36px; margin: 48px 0;
+}
+.article-cta strong {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; color: var(--white);
+  display: block; margin-bottom: 10px;
+}
+.article-cta p { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 20px; line-height: 1.7; }
+.article-cta button {
+  background: var(--amber); color: var(--white);
+  border: none; padding: 12px 24px; border-radius: 4px;
+  font-size: 14px; font-weight: 500; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-tag   { animation: fadeUp 0.6s ease both; animation-delay: 0.1s; opacity: 0; }
+.hero h1    { animation: fadeUp 0.6s ease both; animation-delay: 0.25s; opacity: 0; }
+.hero-greek { animation: fadeUp 0.6s ease both; animation-delay: 0.35s; opacity: 0; }
+.hero-sub   { animation: fadeUp 0.6s ease both; animation-delay: 0.45s; opacity: 0; }
+.hero-ctas  { animation: fadeUp 0.6s ease both; animation-delay: 0.55s; opacity: 0; }
+</style>
+</head>
+<body>
+
+<!-- ══ HOME VIEW ══ -->
+<div id="home-view">
+
+<nav>
+  <div class="nav-brand">
+    <span class="eviol">EVIOL</span>
+    <span class="truth">Truth Be Told</span>
+  </div>
+  <div class="nav-links">
+    <a href="#" onclick="scrollToMyths()">The myths</a>
+    <a href="#">About the campaign</a>
+    <a href="#">evioltruth.gr</a>
+  </div>
+  <button class="nav-ask" onclick="scrollToPharmacist()">Ask your pharmacist →</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">Truth Be Told — EVIOL Campaign 2026</div>
+  <h1>The most important<br>leap is toward more<br><em>intentional</em> self-care.</h1>
+  <p class="hero-greek">Το πιο σημαντικό άλμα που μπορούμε να κάνουμε είναι προς μια πιο συνειδητή φροντίδα του εαυτού μας.</p>
+  <p class="hero-sub">Evidence-based answers to the supplement questions Greeks are already asking. No hype. No selling. Just the truth.</p>
+  <div class="hero-ctas">
+    <button class="btn-primary" onclick="scrollToMyths()">Explore the myths</button>
+    <button class="btn-outline" onclick="scrollToPharmacist()">Ask a pharmacist</button>
+  </div>
+  <div class="scroll-hint">
+    <span class="scroll-line"></span>
+    <span>Scroll to explore</span>
+  </div>
+</section>
+
+<!-- SUPPORTING MESSAGES STRIP -->
+<div class="messages-strip">
+  <div class="message-item">
+    <div class="message-icon">🌿</div>
+    <div class="message-text">
+      <p>Supporting message</p>
+      <strong>Natural does not mean safe.</strong>
+    </div>
+  </div>
+  <div class="message-item">
+    <div class="message-icon">⚕️</div>
+    <div class="message-text">
+      <p>Supporting message</p>
+      <strong>Always consult a healthcare professional.</strong>
+    </div>
+  </div>
+  <div class="message-item">
+    <div class="message-icon">🔬</div>
+    <div class="message-text">
+      <p>Our commitment</p>
+      <strong>Evidence-based. EFSA compliant. Always.</strong>
+    </div>
+  </div>
+</div>
+
+<!-- MYTHS -->
+<section class="myths-section" id="myths-section">
+  <div class="section-header">
+    <div class="section-eyebrow">Common supplement myths</div>
+    <h2 class="section-title">What have you heard?</h2>
+  </div>
+
+  <div class="myths-grid">
+    <div class="myth-card" onclick="showArticle('natural')">
+      <div class="myth-verdict verdict-myth">✕ Myth</div>
+      <h3 class="myth-q">Is natural always safe?</h3>
+      <p class="myth-desc">Just because something comes from nature does not mean your body agrees with it. Hemlock is natural. So is arsenic.</p>
+      <div class="myth-cta">Read the science <span>→</span></div>
+    </div>
+
+    <div class="myth-card" onclick="showArticle('vitamins')">
+      <div class="myth-verdict verdict-partial">≈ Partly true</div>
+      <h3 class="myth-q">Do more vitamins mean better health?</h3>
+      <p class="myth-desc">The relationship between dose and benefit is more complicated than most labels suggest. More is not always better.</p>
+      <div class="myth-cta">Read the science <span>→</span></div>
+    </div>
+
+    <div class="myth-card" onclick="showArticle('diet')">
+      <div class="myth-verdict verdict-myth">✕ Myth</div>
+      <h3 class="myth-q">Can supplements replace a balanced diet?</h3>
+      <p class="myth-desc">Supplements support health. They do not replicate the complexity of whole food nutrition. Not even close.</p>
+      <div class="myth-cta">Read the science <span>→</span></div>
+    </div>
+
+    <div class="myth-card" onclick="showArticle('energy')">
+      <div class="myth-verdict verdict-myth">✕ Myth</div>
+      <h3 class="myth-q">Do vitamins boost energy instantly?</h3>
+      <p class="myth-desc">Energy is a complex metabolic process. Supplements play a supporting role — not the starring one the label implies.</p>
+      <div class="myth-cta">Read the science <span>→</span></div>
+    </div>
+
+    <div class="myth-card" onclick="showArticle('everyone')">
+      <div class="myth-verdict verdict-partial">≈ Partly true</div>
+      <h3 class="myth-q">Do supplements work the same for everyone?</h3>
+      <p class="myth-desc">Age, diet, genetics, and existing conditions all affect how your body uses supplements. What works online may not work for you.</p>
+      <div class="myth-cta">Read the science <span>→</span></div>
+    </div>
+
+    <div class="myth-card" onclick="showArticle('pharmacist')">
+      <div class="myth-verdict verdict-true">✓ True</div>
+      <h3 class="myth-q">Should I check with a pharmacist before buying?</h3>
+      <p class="myth-desc">Yes. Always. Here is why this matters more than most people realise — and how to make the most of that conversation.</p>
+      <div class="myth-cta">Read the science <span>→</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- AMBASSADOR -->
+<section class="ambassador-section">
+  <div>
+    <div class="amb-eyebrow">Truth Be Gold</div>
+    <h2 class="amb-title">He leaps for a living.<br>Now he is asking you<br>to <em>leap differently.</em></h2>
+    <p class="amb-body">Emmanuel "Manolo" Karalis — Olympic bronze medallist, European Indoor Champion, and the second-highest pole vaulter in history — is the campaign ambassador for Truth Be Told. He did not get there following supplement advice from the internet.</p>
+    <div class="amb-quote">
+      <p>"I have spent my entire career trusting science over shortcuts. Your health deserves the same rigour mine does."</p>
+      <cite>— Emmanuel Karalis</cite>
+    </div>
+  </div>
+  <div>
+    <div class="amb-episodes">
+      <div style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:8px;">Five episodes · One myth each</div>
+      <div class="episode-item" onclick="showArticle('natural')">
+        <div class="ep-num">01</div>
+        <div><div class="ep-title">Natural does not mean safe</div><div class="ep-myth">Myth busted ✓</div></div>
+        <div class="ep-arrow">→</div>
+      </div>
+      <div class="episode-item" onclick="showArticle('vitamins')">
+        <div class="ep-num">02</div>
+        <div><div class="ep-title">More vitamins ≠ better health</div><div class="ep-myth">Read the evidence</div></div>
+        <div class="ep-arrow">→</div>
+      </div>
+      <div class="episode-item" onclick="showArticle('diet')">
+        <div class="ep-num">03</div>
+        <div><div class="ep-title">Supplements cannot replace food</div><div class="ep-myth">Read the evidence</div></div>
+        <div class="ep-arrow">→</div>
+      </div>
+      <div class="episode-item" onclick="showArticle('everyone')">
+        <div class="ep-num">04</div>
+        <div><div class="ep-title">They do not work the same for everyone</div><div class="ep-myth">Read the evidence</div></div>
+        <div class="ep-arrow">→</div>
+      </div>
+      <div class="episode-item" onclick="showArticle('energy')">
+        <div class="ep-num">05</div>
+        <div><div class="ep-title">Vitamins do not boost energy instantly</div><div class="ep-myth">Read the evidence</div></div>
+        <div class="ep-arrow">→</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHARMACIST -->
+<section class="pharmacist-section" id="pharmacist-section">
+  <div>
+    <div class="pharm-eyebrow">Ask Before You Add</div>
+    <h2 class="pharm-title">Your pharmacist.<br>Not your feed.</h2>
+    <p class="pharm-body">Greece has more than 12,000 pharmacists. They are trained, regulated, and free to consult. Most people have one within five minutes of where they live. And yet most supplement decisions are made alone, at a checkout screen, based on a post someone liked.</p>
+    <div class="pharm-steps">
+      <div class="pharm-step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <strong>Bring your question</strong>
+          <p>You can ask about a specific product, an ingredient, or a symptom. There are no wrong questions.</p>
+        </div>
+      </div>
+      <div class="pharm-step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <strong>Mention your medications</strong>
+          <p>Supplements interact with many common medications. Your pharmacist can flag anything concerning.</p>
+        </div>
+      </div>
+      <div class="pharm-step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <strong>Get a personalised answer</strong>
+          <p>What is right for someone you follow online may not be right for you. Your pharmacist knows the difference.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pharm-visual">
+    <div class="pharm-visual-tag">Truth Be Bold — In 2,000+ pharmacies across Greece</div>
+    <h3 class="pharm-visual-title">Consult your pharmacist.<br>Not your feed.</h3>
+    <p class="pharm-visual-sub">Every EVIOL pharmacy partner is equipped to give you personalised supplement advice — free, with no appointment needed. Look for the Truth Be Bold window display.</p>
+    <button class="pharm-visual-btn">Find your nearest pharmacy →</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">EVIOL — Truth Be Told</div>
+      <div class="footer-tagline">Truth Be Told. Truth Be Bold. Truth Be Gold.</div>
+    </div>
+    <div class="footer-links">
+      <a href="#">The myths</a>
+      <a href="#">Ask a pharmacist</a>
+      <a href="#">About EVIOL</a>
+      <a href="#">evioltruth.gr</a>
+    </div>
+  </div>
+  <p class="footer-legal">A campaign by EVIOL / GAP S.A. All content is evidence-based and compliant with EFSA health claim regulations (European Commission, 2023). This site does not provide medical advice. Always consult a healthcare professional before starting any supplement regimen. © 2026 GAP S.A. All rights reserved.</p>
+</footer>
+
+</div><!-- end home-view -->
+
+<!-- ══ ARTICLE VIEW ══ -->
+<div id="article-view">
+  <nav class="article-nav">
+    <button class="back-btn" onclick="showHome()">← Back to myths</button>
+    <div class="article-site-name">evioltruth.gr</div>
+  </nav>
+
+  <div class="article-hero">
+    <div id="article-verdict" class="article-verdict verdict-myth">✕ Myth</div>
+    <h1 id="article-title" class="article-title"></h1>
+    <p class="article-meta">Reviewed against EFSA guidelines · Truth Be Told campaign · EVIOL / GAP S.A.</p>
+  </div>
+
+  <div class="article-body">
+    <div id="article-body"></div>
+  </div>
+</div>
+
+<script>
+const articles = {
+  natural: {
+    verdict: '✕ Myth', cls: 'verdict-myth',
+    title: 'Is natural always safe?',
+    body: `
+      <h3>Where does this claim come from?</h3>
+      <p>The wellness industry has spent decades cultivating the idea that "natural" is synonymous with "safe." Products are labelled with images of leaves, forests, and sunlight. The word "natural" carries an implicit promise — that what comes from the earth cannot harm you.</p>
+      <p>But consider hemlock. Arsenic. Amanita mushrooms. All entirely natural. All potentially lethal.</p>
+      <h3>What does the science actually say?</h3>
+      <p>Many plant-derived compounds have documented pharmacological effects — meaning they interact with your body's systems in ways that can be beneficial in the right dose and context, and harmful in others. St. John's Wort, a widely consumed natural supplement, is a clinically significant inducer of CYP3A4 enzymes and can reduce the effectiveness of contraceptives, anticoagulants, and antiretroviral medications.</p>
+      <p>The origin of a compound does not determine its safety profile. Its chemistry, dose, and interaction with your individual biology does.</p>
+      <div class="fact-box"><p><strong>EFSA position:</strong> Regulatory approval of a health claim does not mean a product is universally safe. All supplements — regardless of their natural origin — should be assessed for interactions and appropriateness on an individual basis.</p></div>
+      <h3>What should you do instead?</h3>
+      <p>Before taking any supplement marketed as natural, ask your pharmacist whether it interacts with any medications you take or conditions you have. "Natural" is a marketing word. Safe is a science word.</p>
+      <div><span class="source-tag">EFSA (2024)</span><span class="source-tag">Gauch & Smollich (2025)</span></div>
+      <div class="article-cta"><strong>Natural doesn't mean it's right for you.</strong><p>Your pharmacist can tell you whether a specific natural supplement is appropriate for your health profile — free, with no appointment needed.</p><button>Find your nearest pharmacy</button></div>
+    `
+  },
+  vitamins: {
+    verdict: '≈ Partly true', cls: 'verdict-partial',
+    title: 'Do more vitamins mean better health?',
+    body: `
+      <h3>Where does this claim come from?</h3>
+      <p>High-dose vitamin supplements are one of the fastest-growing segments of the supplement market. The implicit logic is simple: if some vitamins are essential for health, then more must be better. Mega-dose Vitamin C, high-strength B Complex, and extra-strength Vitamin D products all trade on this assumption.</p>
+      <h3>What does the science actually say?</h3>
+      <p>Most vitamins and minerals have an optimal range. Below it, you experience deficiency. Above it, you may experience toxicity or simply excrete the excess. Fat-soluble vitamins such as A, D, E, and K accumulate in tissue and can become harmful at high doses. Water-soluble vitamins are excreted more readily, but even these have upper safe limits established by regulatory bodies.</p>
+      <p>EFSA has established Tolerable Upper Intake Levels for most vitamins precisely because exceeding them carries documented health risks.</p>
+      <div class="fact-box"><p><strong>The evidence:</strong> For most people with a balanced diet, additional high-dose supplementation of vitamins they are not deficient in provides no measurable health benefit — and in some cases increases risk. The relationship between dose and benefit is not linear.</p></div>
+      <h3>What should you do instead?</h3>
+      <p>Ask your pharmacist or doctor whether you have a documented deficiency before choosing a high-dose supplement. A blood test is far more informative than a wellness influencer's recommendation.</p>
+      <div><span class="source-tag">EFSA (2024)</span><span class="source-tag">Katsiroumpa et al. (2025)</span></div>
+      <div class="article-cta"><strong>Not sure what dose is right for you?</strong><p>Your pharmacist can advise on appropriate supplement doses based on your individual health profile.</p><button>Find your nearest pharmacy</button></div>
+    `
+  },
+  diet: {
+    verdict: '✕ Myth', cls: 'verdict-myth',
+    title: 'Can supplements replace a balanced diet?',
+    body: `
+      <h3>Where does this claim come from?</h3>
+      <p>As supplement marketing has grown more sophisticated, some products are positioned as complete nutritional solutions — meal replacements, all-in-one formulas, and "daily essentials" packs that imply you can compensate for a poor diet with the right combination of capsules.</p>
+      <h3>What does the science actually say?</h3>
+      <p>Whole foods contain thousands of bioactive compounds — fibre, phytochemicals, antioxidants — that work synergistically in ways that isolated supplements cannot replicate. The health benefits of a Mediterranean diet, for example, cannot be reduced to a list of micronutrients and replicated in capsule form.</p>
+      <p>Supplements are designed to address specific deficiencies or support specific health outcomes. They are not designed to replace dietary patterns, and no regulatory body approves them as such.</p>
+      <div class="fact-box"><p><strong>EU regulatory position:</strong> Food supplements are defined under EU law as concentrated sources of nutrients intended to supplement the normal diet — not to replace it. Any product claiming otherwise is making an unauthorised health claim.</p></div>
+      <h3>What should you do instead?</h3>
+      <p>Use supplements to address specific documented needs, not as a dietary shortcut. If you are concerned about nutritional gaps in your diet, speak to a pharmacist or dietitian before reaching for a supplement shelf.</p>
+      <div><span class="source-tag">European Commission (2023)</span><span class="source-tag">EFSA (2024)</span></div>
+      <div class="article-cta"><strong>Wondering if your diet needs support?</strong><p>Your pharmacist can help you understand which supplements — if any — are appropriate for your lifestyle and health goals.</p><button>Find your nearest pharmacy</button></div>
+    `
+  },
+  energy: {
+    verdict: '✕ Myth', cls: 'verdict-myth',
+    title: 'Do vitamins boost energy instantly?',
+    body: `
+      <h3>Where does this claim come from?</h3>
+      <p>Energy supplement marketing is one of the most aggressively misleading areas of the wellness industry. Products claiming to "boost energy," "fight fatigue," and "power your day" are ubiquitous — and the claims are almost never what they appear to be.</p>
+      <h3>What does the science actually say?</h3>
+      <p>Vitamins do not produce energy directly. B vitamins, for example, play a role in energy metabolism — but only in people who are deficient in them. If you are not deficient, taking more B vitamins will not give you more energy. The sensation of an "energy boost" from some supplements is often attributable to caffeine or other stimulants included in the formulation, not to the vitamins themselves.</p>
+      <div class="fact-box"><p><strong>EFSA approved claim:</strong> B vitamins contribute to normal energy-yielding metabolism. This is not the same as saying they boost energy. It means they support the metabolic processes that produce energy — a function that is already happening normally in a healthy, non-deficient person.</p></div>
+      <h3>What should you do instead?</h3>
+      <p>If you are experiencing persistent fatigue, consult a doctor rather than reaching for an energy supplement. Fatigue is a symptom with many possible causes, most of which require proper diagnosis rather than supplementation. You can't watch a tutorial on this.</p>
+      <div><span class="source-tag">EFSA (2024)</span><span class="source-tag">Gauch & Smollich (2025)</span></div>
+      <div class="article-cta"><strong>Feeling tired all the time?</strong><p>Persistent fatigue deserves a proper conversation with a healthcare professional. Your pharmacist is a good first step.</p><button>Find your nearest pharmacy</button></div>
+    `
+  },
+  everyone: {
+    verdict: '≈ Partly true', cls: 'verdict-partial',
+    title: 'Do supplements work the same for everyone?',
+    body: `
+      <h3>Where does this claim come from?</h3>
+      <p>Supplement marketing typically presents products as universally beneficial — as if the same capsule will have the same effect on a 25-year-old athlete and a 65-year-old with a chronic condition. The one-size-fits-all approach is commercially convenient but scientifically unsound.</p>
+      <h3>What does the science actually say?</h3>
+      <p>Absorption, metabolism, and response to supplements vary significantly based on age, sex, genetics, existing health conditions, medication use, and diet. Vitamin D absorption, for example, is affected by skin tone, geographic location, and sun exposure. Iron supplementation appropriate for a menstruating woman may be unnecessary or even harmful for a post-menopausal woman or a man.</p>
+      <div class="fact-box"><p><strong>Individual variation matters:</strong> What works for someone you follow online may be completely irrelevant to your own health profile. Personalised advice from a healthcare professional is always more reliable than generalised influencer recommendations.</p></div>
+      <h3>What should you do instead?</h3>
+      <p>Before starting any supplement, consider your individual health profile. A pharmacist can help you assess whether a specific product is appropriate for you — and flag any interactions with medications you are already taking.</p>
+      <div><span class="source-tag">Katsiroumpa et al. (2025)</span><span class="source-tag">EFSA (2024)</span></div>
+      <div class="article-cta"><strong>Is this supplement right for you specifically?</strong><p>Your pharmacist can give you personalised advice based on your health profile, diet, and any medications you are taking.</p><button>Find your nearest pharmacy</button></div>
+    `
+  },
+  pharmacist: {
+    verdict: '✓ True', cls: 'verdict-true',
+    title: 'Should I check with a pharmacist before buying?',
+    body: `
+      <h3>Why this question matters</h3>
+      <p>In an environment where supplement advice comes primarily from social media, influencers, and product marketing, the pharmacist is one of the most underused resources available to Greek consumers. They are accessible, free to consult, and trained specifically to advise on supplement safety and appropriateness.</p>
+      <h3>What can a pharmacist actually tell you?</h3>
+      <p>A pharmacist can review your current medications and flag any potential interactions with supplements you are considering. They can advise on appropriate doses for your age, sex, and health conditions. They can identify whether a product is registered with the National Organisation for Medicines (EOF) and meets Greek and EU safety standards.</p>
+      <p>And they can tell you honestly when a supplement is unlikely to benefit you — something a supplement retailer or influencer has no incentive to do.</p>
+      <div class="fact-box"><p><strong>The honest answer:</strong> Yes. Always consult a healthcare professional before adding any supplement to your routine. Not because supplements are dangerous — but because personalised guidance is always more reliable than generic recommendations, and your pharmacist is the most qualified and accessible person to give it.</p></div>
+      <h3>How to make the most of a pharmacist consultation</h3>
+      <p>Bring a list of any medications you are currently taking. Tell your pharmacist about any existing health conditions. Ask specifically whether the supplement you are considering has any known interactions or contraindications for your situation. Ask how long you should take it and what signs would suggest it is not working for you.</p>
+      <div><span class="source-tag">Katsiroumpa et al. (2025)</span><span class="source-tag">EOF (n.d.)</span></div>
+      <div class="article-cta"><strong>Ready to ask your pharmacist?</strong><p>Find your nearest EVIOL pharmacy partner and get personalised supplement advice — free, with no appointment needed.</p><button>Find your nearest pharmacy</button></div>
+    `
+  }
+};
+
+function showArticle(key) {
+  const a = articles[key];
+  const verdict = document.getElementById('article-verdict');
+  verdict.textContent = a.verdict;
+  verdict.className = 'article-verdict ' + a.cls;
+  document.getElementById('article-title').textContent = a.title;
+  document.getElementById('article-body').innerHTML = a.body;
+  document.getElementById('home-view').style.display = 'none';
+  document.getElementById('article-view').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+function showHome() {
+  document.getElementById('article-view').style.display = 'none';
+  document.getElementById('home-view').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+function scrollToMyths() {
+  document.getElementById('myths-section').scrollIntoView({ behavior: 'smooth' });
+}
+function scrollToPharmacist() {
+  document.getElementById('pharmacist-section').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
